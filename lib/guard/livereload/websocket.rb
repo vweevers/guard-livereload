@@ -11,10 +11,10 @@ module Guard
         parser << data
         if parser.http_method != 'GET' || parser.upgrade?
           super #pass the request to websocket
-        elsif parser.request_path == '/livereload.js'
+        elsif parser.request_url =~ /livereload\.js/
           _serve_file(_livereload_js_file)
-        elsif File.exist?(parser.request_path[1..-1])
-          _serve_file(parser.request_path[1..-1]) # Strip leading slash
+        elsif File.exist?(parser.request_url[1..-1])
+          _serve_file(parser.request_url[1..-1]) # Strip leading slash
         else
           send_data("HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\nContent-Length: 13\r\n\r\n404 Not Found")
           close_connection_after_writing
